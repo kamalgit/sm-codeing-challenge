@@ -1,9 +1,13 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using sm_coding_challenge.Services.DataProvider;
+using sm_coding_challenge.Services.DataSource;
+using System;
+using System.Text;
 
 namespace sm_coding_challenge
 {
@@ -22,10 +26,13 @@ namespace sm_coding_challenge
             services.AddControllersWithViews();
 
             services.AddTransient<IDataProvider, DataProviderImpl>();
+
+            services.AddTransient<IDataStore, RedisDataStore>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
+            IHostApplicationLifetime lifetime, IDataStore dataStore)
         {
             if (env.IsDevelopment())
             {
@@ -37,7 +44,9 @@ namespace sm_coding_challenge
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            
+
+            app.UseMiddleware<APIErrorHandler>();
+
             app.UseStaticFiles();
 
             app.UseRouting();
@@ -50,6 +59,8 @@ namespace sm_coding_challenge
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            dataStore.Connect();
         }
     }
 }
