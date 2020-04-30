@@ -28,7 +28,7 @@ Currently this project has an 'IDataProvider' interface that has a a single meth
 * Duplicates should be removed from the existing GetPlayers result(s)
     * Kamal: Done
 * Implement the "LatestPlayers" method to return a structure similar to: https://gist.githubusercontent.com/RichardD012/a81e0d1730555bc0d8856d1be980c803/raw/3fe73fafadf7e5b699f056e55396282ff45a124b/output.json.  Note, the concept of latest player is simply from a client's "needs".  Latest is in reference to the latest fetch of the above basic.json endpoint.  For this exercise the results will always be the same.
-    * Kamal: I have tried to get further clarification on this part, but didn't get a proper answer to my questions. I made some assumptions and noted it down in my implementation.
+    * Kamal: I have tried to get further clarification on this part, but didn't get a proper answer to my questions. I made some assumptions and noted them down in my implementation.
 * All responses should be performant.  None of these should take longer than a few miliseconds.  There are multiple solutions/avenues to this but think about the frequency that you fetch the data and different ways to mitigate iterating over too much data or making multiple requests.
     * Kamal: I used redis for caching. This would make it pretty fast, but not for the first time.
 * If you remove/change/invalidate the url from the DataProvider fetch method, the system should still "work" (fail gracefully - up to you on your definition of work).
@@ -41,14 +41,16 @@ Currently this project has an 'IDataProvider' interface that has a a single meth
 * What are some ways to prevent multiple calls to the data endpoint?
     * Kamal: I used caching to prevent that.
 * This data set is not updated very frequently (once a week), what are some ways we could take advantage of this in our system?
-    * Kamal: Based on that we can configure cache expiration to last longer. But causion is needed, not to miss data updates if we set longer than appropriate expiry intervals.
+    * Kamal: Based on that we can configure cache lifetime to last longer. But caution is needed, not to miss data updates if we set longer than appropriate expiry intervals.
 
 ## Notes
 
 There is no limit to what is acceptable as far as libraries, changes, and methodologies goes.  Feel free to add/remove/change methods, abstractions, etc. to facilitate your needs.  Feel free to comment on areas that are dubious or may present challenges in a real-world environment.
 
 ## Kamal: Prerequisites
-Redis is a prerequisite, to be able to run the project, you need to run the following commands first.
+Redis is a prerequisite, to be able to run the project locally, you need to run the following commands first.
 
     choco install redis-64
     redis-server
+
+This should run redis server on localhost. If you already have a remote redis server, you may configure redis host in appsettings.json
